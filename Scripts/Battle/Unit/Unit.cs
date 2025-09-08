@@ -1,7 +1,12 @@
 using UnityEngine;
+using BuffSystem;
 
 public class Unit : MonoBehaviour
 {
+    //引入隔壁的Buff管理器
+    private BuffManager _buffManager;
+    public BuffManager BuffManager => _buffManager;
+
     // 背景属性
     public string unitName;
 
