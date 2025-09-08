@@ -2405,14 +2405,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1260274231}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7285e818291818840a1ef3b901630854, type: 3}
+  m_Script: {fileID: 11500000, guid: ac0d2f2e23974414ba5e577d6c376e5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitName: "\u4E3B\u89D2"
+  unitName: Player
   _speed: 5
-  attackPower: 50
-  defensePower: 10
-  maxHealth: 1000
+  attackPower: 0
+  defensePower: 0
+  maxHealth: 100
   _health: 100
   maxSkillPoint: 60
   _skillPoint: 0
@@ -2420,12 +2420,17 @@ MonoBehaviour:
   skillMultiplier: 1
   damageReduction: 0
   flatDamageReduction: 0
-  IsPlayer: 1
+  IsPlayer: 0
   IsEnemy: 0
   IsNeutral: 0
-  StandingPosition: 0
+  StandingPosition: -1
   IsDefending: 0
   IsDodging: 0
+  testHealth: 100
+  testMaxHealth: 100
+  testAttackPower: 20
+  testDefensePower: 10
+  testSpeed: 15
 --- !u!1 &1432278585
 GameObject:
   m_ObjectHideFlags: 0

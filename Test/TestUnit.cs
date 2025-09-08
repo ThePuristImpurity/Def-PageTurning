@@ -11,11 +11,35 @@ public class TestUnit : Unit
     public int testDefensePower = 10;
     public int testSpeed = 15;
 
-    protected override void Start()
+    // 添加属性访问器
+    public int TestHealth
     {
-        base.Start();
+        get => testHealth;
+        set => testHealth = Mathf.Clamp(value, 0, testMaxHealth);
+    }
+
+    public int TestAttackPower
+    {
+        get => testAttackPower;
+        set => testAttackPower = Mathf.Max(0, value);
+    }
+
+    void Start()
+    {
+        // 检查基类是否已经初始化了 BuffManager
+        if (BuffManager == null)
+        {
+            // 如果基类没有初始化，我们自己初始化
+            var buffManagerComponent = gameObject.AddComponent<BuffManager>();
+            buffManagerComponent.Initialize(this);
+        }
+        else
+        {
+            // 如果基类已经初始化，我们可以直接使用
+            Debug.Log("使用基类的 BuffManager");
+        }
         
-        // 直接使用基类的 BuffManager，订阅事件用于调试
+        // 订阅事件用于调试
         BuffManager.OnBuffAdded += OnBuffAdded;
         BuffManager.OnBuffRemoved += OnBuffRemoved;
         
@@ -32,10 +56,8 @@ public class TestUnit : Unit
         Debug.Log($"🔴 {unitName} 移除: {buff.BuffData.buffName}");
     }
 
-    protected override void OnDestroy()
+    void OnDestroy()
     {
-        base.OnDestroy();
-        
         if (BuffManager != null)
         {
             BuffManager.OnBuffAdded -= OnBuffAdded;
