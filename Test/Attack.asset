@@ -12,15 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e58e990cc1579e74693bbbcd06c983fd, type: 3}
   m_Name: Attack
   m_EditorClassIdentifier: 
-  buffId: new_buff
-  buffName: "\u65B0Buff"
-  description: "Buff\u6548\u679C\u63CF\u8FF0"
-  category: 2
-  effectType: 1
+  buffId: AttackBuff
+  buffName: AttackBuff
+  description: "20%\u52A0\u653B"
+  category: 0
+  effectType: 0
   duration: 3
   maxStacks: 1
   stackingRule: 1
-  effects: []
+  effects:
+  - timing: 0
+    target: 0
+    operation: 0
+    valueType: 0
+    value: 0
+    statType: 0
+    isTemporary: 0
+    delayTurns: 0
+    triggerChance: 0
   grantedStates: 0
   requiredBuffs: []
   conflictingBuffs: []
