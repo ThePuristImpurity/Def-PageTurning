@@ -10,27 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e58e990cc1579e74693bbbcd06c983fd, type: 3}
-  m_Name: Attack
+  m_Name: Stun
   m_EditorClassIdentifier: 
-  buffId: AttackBuff
-  buffName: AttackBuff
-  description: "20%\u52A0\u653B"
-  category: 0
+  buffId: stun
+  buffName: stun
+  description: "\u6655\u77291\u56DE\u5408\uFF0C\u56E0\u4E3A\u6655\u7729\u6548\u679C\u8FD8\u6CA1\u5199\uFF0C\u6240\u4EE5\u5148\u68C0\u6D4B\u6807\u5FD7\u5728\u4E0D\u5728"
+  category: 1
   effectType: 0
-  duration: 3
+  duration: 1
   maxStacks: 1
   stackingRule: 1
-  effects:
-  - timing: 0
-    target: 0
-    operation: 5
-    valueType: 0
-    value: 0.2
-    statType: 1
-    isTemporary: 1
-    delayTurns: 0
-    triggerChance: 1
-  grantedStates: 0
+  effects: []
+  grantedStates: 1
   requiredBuffs: []
   conflictingBuffs: []
   dispellableBy: 
@@ -42,7 +33,7 @@ MonoBehaviour:
     durationDisplayFormat: '{0}'
   isHidden: 0
   persistThroughDeath: 0
-  canBeResisted: 0
+  canBeResisted: 1
   baseResistChance: 0.1
   showFloatingText: 1
   floatingTextFormat: '{0}'

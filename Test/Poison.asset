@@ -10,27 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e58e990cc1579e74693bbbcd06c983fd, type: 3}
-  m_Name: Attack
+  m_Name: Poison
   m_EditorClassIdentifier: 
-  buffId: AttackBuff
-  buffName: AttackBuff
-  description: "20%\u52A0\u653B"
-  category: 0
+  buffId: poison
+  buffName: poison
+  description: "\u4E2D\u6BD2\uFF0C\u6BCF\u56DE\u5408\u7ED3\u675F\u638910%\u8840"
+  category: 1
   effectType: 0
   duration: 3
   maxStacks: 1
   stackingRule: 1
   effects:
-  - timing: 0
+  - timing: 3
     target: 0
-    operation: 5
-    valueType: 0
-    value: 0.2
-    statType: 1
-    isTemporary: 1
+    operation: 1
+    valueType: 1
+    value: 10
+    statType: 0
+    isTemporary: 0
     delayTurns: 0
     triggerChance: 1
-  grantedStates: 0
+  grantedStates: 64
   requiredBuffs: []
   conflictingBuffs: []
   dispellableBy: 
@@ -42,7 +42,7 @@ MonoBehaviour:
     durationDisplayFormat: '{0}'
   isHidden: 0
   persistThroughDeath: 0
-  canBeResisted: 0
+  canBeResisted: 1
   baseResistChance: 0.1
   showFloatingText: 1
   floatingTextFormat: '{0}'

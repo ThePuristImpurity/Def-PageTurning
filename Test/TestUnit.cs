@@ -9,7 +9,7 @@ public class TestUnit : Unit
     public int testMaxHealth = 100;
     public int testAttackPower = 20;
     public int testDefensePower = 10;
-    public int testSpeed = 15;
+    public int testSpeed = 5;
 
     void Start()
     {
@@ -24,8 +24,8 @@ public class TestUnit : Unit
         if (BuffManager == null)
         {
             // 如果基类没有初始化，我们自己初始化
-            var buffManagerComponent = gameObject.AddComponent<BuffManager>();
-            buffManagerComponent.Initialize(this);
+            BuffManager = gameObject.AddComponent<BuffManager>();
+            BuffManager.Initialize(this);
         }
         else
         {

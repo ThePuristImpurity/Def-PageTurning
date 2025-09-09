@@ -10,24 +10,42 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e58e990cc1579e74693bbbcd06c983fd, type: 3}
-  m_Name: Attack
+  m_Name: Stacking
   m_EditorClassIdentifier: 
-  buffId: AttackBuff
-  buffName: AttackBuff
-  description: "20%\u52A0\u653B"
+  buffId: stacking
+  buffName: stacking
+  description: "\u53E0\u52A03\u5C42\u7684\u653B\u51FB\u529B\u56FA\u5B9A+10buff"
   category: 0
   effectType: 0
   duration: 3
-  maxStacks: 1
-  stackingRule: 1
+  maxStacks: 3
+  stackingRule: 3
   effects:
   - timing: 0
     target: 0
-    operation: 5
+    operation: 0
     valueType: 0
-    value: 0.2
+    value: 10
     statType: 1
-    isTemporary: 1
+    isTemporary: 0
+    delayTurns: 0
+    triggerChance: 1
+  - timing: 3
+    target: 0
+    operation: 0
+    valueType: 0
+    value: 10
+    statType: 1
+    isTemporary: 0
+    delayTurns: 0
+    triggerChance: 1
+  - timing: 4
+    target: 0
+    operation: 0
+    valueType: 0
+    value: 10
+    statType: 1
+    isTemporary: 0
     delayTurns: 0
     triggerChance: 1
   grantedStates: 0
@@ -42,7 +60,7 @@ MonoBehaviour:
     durationDisplayFormat: '{0}'
   isHidden: 0
   persistThroughDeath: 0
-  canBeResisted: 0
+  canBeResisted: 1
   baseResistChance: 0.1
   showFloatingText: 1
   floatingTextFormat: '{0}'

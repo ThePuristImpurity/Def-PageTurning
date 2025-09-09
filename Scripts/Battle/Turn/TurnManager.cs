@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using BuffSystem;
 
 public class TurnManager : MonoBehaviour
 {
@@ -95,7 +96,7 @@ public class TurnManager : MonoBehaviour
         
         Debug.Log($"找到 {allUnits.Count} 个单位");
         
-        // 添加详细日志
+        // 添加详细日志并初始化其BuffManager
         foreach (Unit unit in allUnits)
         {
             Debug.Log($"单位: {unit.name}, 是敌人: {unit.IsEnemy},站位为{unit.StandingPosition}号位");
@@ -662,6 +663,12 @@ public class TurnManager : MonoBehaviour
             yield break; // 结束协程
         }
         
+        //所有单位的Buff更新回合
+        foreach(Unit unit in allUnits)
+        {
+            unit.BuffManager.UpdateBuffsOnTurnEnd();
+        }
+
         // 通知UI和其他系统回合结束
         OnRoundEnd?.Invoke();
         

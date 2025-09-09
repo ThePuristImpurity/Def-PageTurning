@@ -4,8 +4,12 @@ using BuffSystem;
 public class Unit : MonoBehaviour
 {
     //引入隔壁的Buff管理器
-    private BuffManager _buffManager;
-    public BuffManager BuffManager => _buffManager;
+    protected BuffManager _buffManager;
+    public BuffManager BuffManager
+    {
+        get => _buffManager;
+        set => _buffManager=value;
+    }
 
     // 背景属性
     public string unitName;
@@ -56,6 +60,12 @@ public class Unit : MonoBehaviour
     public bool IsDodging = false;//是否处于闪避状态
 
     public bool IsDefeated { get { return health == 0; } }
+
+    void start()
+    {
+        BuffManager.Initialize(this);// 先初始化 BuffManager
+
+    }
     
     // 决策方法(敌方AI使用)
     public void DecideAction()
