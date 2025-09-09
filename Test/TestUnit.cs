@@ -11,21 +11,15 @@ public class TestUnit : Unit
     public int testDefensePower = 10;
     public int testSpeed = 15;
 
-    // 添加属性访问器
-    public int TestHealth
-    {
-        get => testHealth;
-        set => testHealth = Mathf.Clamp(value, 0, testMaxHealth);
-    }
-
-    public int TestAttackPower
-    {
-        get => testAttackPower;
-        set => testAttackPower = Mathf.Max(0, value);
-    }
-
     void Start()
     {
+        // 将测试值赋给基类的属性
+        maxHealth = testMaxHealth;
+        health = testHealth;
+        attackPower = testAttackPower;
+        defensePower = testDefensePower;
+        speed = testSpeed;
+        
         // 检查基类是否已经初始化了 BuffManager
         if (BuffManager == null)
         {
@@ -43,7 +37,7 @@ public class TestUnit : Unit
         BuffManager.OnBuffAdded += OnBuffAdded;
         BuffManager.OnBuffRemoved += OnBuffRemoved;
         
-        Debug.Log($"{unitName} 初始化完成，生命值: {testHealth}");
+        Debug.Log($"{unitName} 初始化完成，生命值: {health}");
     }
 
     private void OnBuffAdded(BuffInstance buff)

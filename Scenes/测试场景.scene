@@ -1914,6 +1914,7 @@ GameObject:
   - component: {fileID: 1260274233}
   - component: {fileID: 1260274232}
   - component: {fileID: 1260274236}
+  - component: {fileID: 1260274237}
   m_Layer: 3
   m_HasEditorInfo: 1
   m_Name: Player
@@ -2029,7 +2030,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: Player
   _speed: 5
-  attackPower: 0
+  attackPower: 10
   defensePower: 0
   maxHealth: 100
   _health: 100
@@ -2039,17 +2040,35 @@ MonoBehaviour:
   skillMultiplier: 1
   damageReduction: 0
   flatDamageReduction: 0
-  IsPlayer: 0
+  IsPlayer: 1
   IsEnemy: 0
   IsNeutral: 0
-  StandingPosition: -1
+  StandingPosition: 0
   IsDefending: 0
   IsDodging: 0
-  testHealth: 100
+  testHealth: 1000
   testMaxHealth: 100
   testAttackPower: 20
   testDefensePower: 10
   testSpeed: 15
+--- !u!114 &1260274237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260274231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fcd6800f3193ab4da3ebe02f223206d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  testAttackBuff: {fileID: 11400000, guid: 23457acaa0ee22f46a2636e80f4f19f4, type: 2}
+  testPoisonDebuff: {fileID: 0}
+  testStunDebuff: {fileID: 0}
+  testStackingBuff: {fileID: 0}
+  testUnit: {fileID: 1260274236}
+  casterUnit: {fileID: 1798979223}
 --- !u!1 &1432278585
 GameObject:
   m_ObjectHideFlags: 0
@@ -2431,6 +2450,7 @@ GameObject:
   - component: {fileID: 1798979220}
   - component: {fileID: 1798979219}
   - component: {fileID: 1798979223}
+  - component: {fileID: 1798979224}
   m_Layer: 3
   m_HasEditorInfo: 1
   m_Name: Caster
@@ -2544,12 +2564,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0d2f2e23974414ba5e577d6c376e5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitName: 
+  unitName: 1
   _speed: 5
   attackPower: 0
   defensePower: 0
   maxHealth: 100
-  _health: 100
+  _health: 10000
   maxSkillPoint: 60
   _skillPoint: 0
   attackMultiplier: 1
@@ -2557,16 +2577,34 @@ MonoBehaviour:
   damageReduction: 0
   flatDamageReduction: 0
   IsPlayer: 0
-  IsEnemy: 0
+  IsEnemy: 1
   IsNeutral: 0
-  StandingPosition: -1
+  StandingPosition: 1
   IsDefending: 0
   IsDodging: 0
-  testHealth: 100
+  testHealth: 500
   testMaxHealth: 100
   testAttackPower: 20
   testDefensePower: 10
   testSpeed: 15
+--- !u!114 &1798979224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1798979218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fcd6800f3193ab4da3ebe02f223206d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  testAttackBuff: {fileID: 0}
+  testPoisonDebuff: {fileID: 0}
+  testStunDebuff: {fileID: 0}
+  testStackingBuff: {fileID: 0}
+  testUnit: {fileID: 0}
+  casterUnit: {fileID: 0}
 --- !u!1 &1999325602
 GameObject:
   m_ObjectHideFlags: 0

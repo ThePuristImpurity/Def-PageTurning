@@ -23,13 +23,13 @@ MonoBehaviour:
   effects:
   - timing: 0
     target: 0
-    operation: 0
+    operation: 5
     valueType: 0
-    value: 0
-    statType: 0
-    isTemporary: 0
+    value: 20
+    statType: 1
+    isTemporary: 1
     delayTurns: 0
-    triggerChance: 0
+    triggerChance: 1
   grantedStates: 0
   requiredBuffs: []
   conflictingBuffs: []
