@@ -30,24 +30,6 @@ MonoBehaviour:
     isTemporary: 0
     delayTurns: 0
     triggerChance: 1
-  - timing: 3
-    target: 0
-    operation: 0
-    valueType: 0
-    value: 10
-    statType: 1
-    isTemporary: 0
-    delayTurns: 0
-    triggerChance: 1
-  - timing: 4
-    target: 0
-    operation: 0
-    valueType: 0
-    value: 10
-    statType: 1
-    isTemporary: 0
-    delayTurns: 0
-    triggerChance: 1
   grantedStates: 0
   requiredBuffs: []
   conflictingBuffs: []
