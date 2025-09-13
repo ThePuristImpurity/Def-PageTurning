@@ -45,39 +45,35 @@ namespace BuffSystem
     // 效果操作类型枚举
     public enum EffectOperation
     {
-        Add,            // 增加值：直接增加数值
-        Subtract,       // 减少值：直接减少数值
-        Multiply,       // 乘以值：乘以系数
-        Divide,         // 除以值：除以系数
-        Set,            // 设置值：直接设置数值
-        AddPercentage,  // 增加百分比：按百分比增加
-        SubtractPercentage // 减少百分比：按百分比减少
+        Add,               // 增加值：直接增加数值
+        Subtract,          // 减少值：直接减少数值
+        Multiply,          // 乘以值：乘以系数
+        Divide,            // 除以值：除以系数
+        Set,               // 设置值：直接设置数值
+        AddPercentage,     // 增加百分比：按百分比增加，输入数字会被乘0.01
+        SubtractPercentage // 减少百分比：按百分比减少，输入数字会被乘0.01
     }
 
     // 效果数值类型枚举
     public enum EffectValueType
     {
         Flat,                   // 固定值：使用固定的数值
-        Percentage,             // 百分比：使用百分比数值（0-100）
-        BasedOnAttack,          // 基于攻击力：基于单位的攻击力计算
-        BasedOnDefense,         // 基于防御力：基于单位的防御力计算
-        BasedOnMaxHealth,       // 基于最大生命值：基于单位的最大生命值计算
-        BasedOnCurrentHealth,   // 基于当前生命值：基于单位的当前生命值计算
-        BasedOnMissingHealth    // 基于已损失生命值：基于单位的已损失生命值计算
+        Percentage,             // 百分比：使用百分比数值
+        Reciprocal,             // 倒数：使用给定数值的倒数
+        BasedOnStatType         // 基于某数值：使用某其他数值
     }
 
     // 属性类型枚举
     public enum StatType
     {
-        Health,         // 生命值
-        Attack,         // 攻击力
-        Defense,        // 防御力
-        Speed,          // 速度
-        CriticalChance, // 暴击率
-        CriticalDamage, // 暴击伤害
-        Accuracy,       // 命中率
-        Evasion,        // 闪避率
-        Shield          // 护盾值
+        BaseHealth,      // 基础最大生命值(只允许加减)
+        HealthMultiplier,// 生命倍率(只允许乘除)
+        Health,          // 当前生命值(除随最大生命值按比例放大外只允许加减)
+        AttackPower,     // 攻击力(只允许加减)
+        AttackMultiplier,// 攻击倍率(只允许乘除)
+        DefensePower,    // 防御力(只允许加减)
+        Speed,           // 速度(只允许加减)
+        Shield           // 护盾值(只允许加减)
     }
 
     // 状态标志枚举（使用Flags特性支持多状态组合）

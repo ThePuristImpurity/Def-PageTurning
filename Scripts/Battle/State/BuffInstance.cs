@@ -25,9 +25,6 @@ namespace BuffSystem
         // 效果延迟计时器（键为效果索引，值为剩余延迟回合数）
         private Dictionary<int, int> _effectDelayCounters = new Dictionary<int, int>();
         
-        // 临时效果管理器
-        private TemporaryEffectManager _tempEffectManager;
-        
         /// <summary>
         /// Buff数据
         /// </summary>
@@ -64,9 +61,6 @@ namespace BuffSystem
             _currentStacks = Mathf.Clamp(initialStacks, 1, buffData.maxStacks);
             _remainingDuration = buffData.duration;
             _isActive = true;
-            
-            // 初始化临时效果管理器
-            _tempEffectManager = new TemporaryEffectManager(owner);
             
             // 初始化效果延迟计数器
             for (int i = 0; i < buffData.effects.Count; i++)
@@ -184,9 +178,6 @@ namespace BuffSystem
         {
             // 触发移除效果
             TriggerEffects(ApplyTiming.OnRemove);
-            
-            // 恢复所有临时效果
-            _tempEffectManager.RestoreAllTemporaryEffects();
             
             _isActive = false;
             Debug.Log($"{_buffData.buffName} 被强制移除");

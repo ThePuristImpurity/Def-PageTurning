@@ -51,33 +51,21 @@ namespace BuffSystem
                     break;
                     
                 case EffectValueType.Percentage:
-                    // 百分比值（0-1范围）
-                    baseValue = baseValue / 100f;
+                    // 百分比值
+                    baseValue = baseValue * 0.01f;
                     break;
-                    
-                case EffectValueType.BasedOnAttack:
-                    // 基于施放者攻击力
-                    baseValue = caster != null ? baseValue * caster.attackPower : baseValue;
+
+                case EffectValueType.Reciprocal:
+                    // 倒数值
+                    baseValue = (baseValue == 0f) ? 0f : (1f / baseValue);
                     break;
-                    
-                case EffectValueType.BasedOnDefense:
-                    // 基于施放者防御力
-                    baseValue = caster != null ? baseValue * caster.defensePower : baseValue;
-                    break;
-                    
-                case EffectValueType.BasedOnMaxHealth:
-                    // 基于目标最大生命值
-                    baseValue = baseValue * target.maxHealth;
-                    break;
-                    
-                case EffectValueType.BasedOnCurrentHealth:
-                    // 基于目标当前生命值
-                    baseValue = baseValue * target.health;
-                    break;
-                    
-                case EffectValueType.BasedOnMissingHealth:
-                    // 基于目标已损失生命值
-                    baseValue = baseValue * (target.maxHealth - target.health);
+
+                case EffectValueType.BasedOnStatType:
+                    // 基于属性：使用现成的 DetermineEffectTarget 函数
+                    Unit statUnit = DetermineEffectTarget(effect, target, caster);
+                    if (statUnit == null) return 0f;
+                    float statValue = GetStatType(statUnit, effect.statType);
+                    baseValue *= statValue;
                     break;
             }
             
@@ -127,370 +115,104 @@ namespace BuffSystem
                     return target;
             }
         }
+
+        private static float GetStatType(Unit unit, StatType statType)
+        {
+            if (unit == null) return 0f;
+            
+            switch (statType)
+            {
+                case StatType.BaseHealth:
+                    return unit.baseHealth;
+                    
+                case StatType.HealthMultiplier:
+                    return unit.healthMultiplier;
+                    
+                case StatType.AttackPower:
+                    return unit.attackPower;
+                    
+                case StatType.AttackMultiplier:
+                    return unit.attackMultiplier;
+                    
+                case StatType.DefensePower:
+                    return unit.defensePower;
+                    
+                case StatType.Speed:
+                    return unit.speed;
+                    
+                case StatType.Shield:
+                    return unit.shield;
+                    
+                default:
+                    Debug.LogWarning($"未知的StatType: {statType}");
+                    return 0f;
+            }
+        }
         
         /// <summary>
         /// 应用效果到目标单位
         /// </summary>
         private static void ApplyEffectToTarget(BuffEffect effect, Unit target, float value)
         {
-            switch (effect.operation)
-            {
-                case EffectOperation.Add:
-                    ApplyAddOperation(effect, target, value);
-                    break;
-                    
-                case EffectOperation.Subtract:
-                    ApplySubtractOperation(effect, target, value);
-                    break;
-                    
-                case EffectOperation.Multiply:
-                    ApplyMultiplyOperation(effect, target, value);
-                    break;
-                    
-                case EffectOperation.Divide:
-                    ApplyDivideOperation(effect, target, value);
-                    break;
-                    
-                case EffectOperation.Set:
-                    ApplySetOperation(effect, target, value);
-                    break;
-                    
-                case EffectOperation.AddPercentage:
-                    ApplyAddPercentageOperation(effect, target, value);
-                    break;
-                    
-                case EffectOperation.SubtractPercentage:
-                    ApplySubtractPercentageOperation(effect, target, value);
-                    break;
-            }
-        }
-        
-        #region 具体操作实现
-        
-        /// <summary>
-        /// 应用加法操作
-        /// </summary>
-        private static void ApplyAddOperation(BuffEffect effect, Unit target, float value)
-        {
-            switch (effect.statType)
-            {
-                case StatType.Health:
-                    target.health += (int)value;
-                    break;
-                    
-                case StatType.Attack:
-                    target.attackPower += (int)value;
-                    break;
-                    
-                case StatType.Defense:
-                    target.defensePower += (int)value;
-                    break;
-                    
-                case StatType.Speed:
-                    target.speed += (int)value;
-                    break;
-                    
-                case StatType.CriticalChance:
-                    // 这里需要实现暴击率修改逻辑
-                    break;
-                    
-                case StatType.CriticalDamage:
-                    // 这里需要实现暴击伤害修改逻辑
-                    break;
-                    
-                case StatType.Accuracy:
-                    // 这里需要实现命中率修改逻辑
-                    break;
-                    
-                case StatType.Evasion:
-                    // 这里需要实现闪避率修改逻辑
-                    break;
-                    
-                case StatType.Shield:
-                    // 这里需要实现护盾值修改逻辑
-                    break;
-            }
-        }
-        
-        /// <summary>
-        /// 应用减法操作
-        /// </summary>
-        private static void ApplySubtractOperation(BuffEffect effect, Unit target, float value)
-        {
-            switch (effect.statType)
-            {
-                case StatType.Health:
-                    target.health -= (int)value;
-                    break;
-                    
-                case StatType.Attack:
-                    target.attackPower -= (int)value;
-                    break;
-                    
-                case StatType.Defense:
-                    target.defensePower -= (int)value;
-                    break;
-                    
-                case StatType.Speed:
-                    target.speed -= (int)value;
-                    break;
-                    
-                case StatType.CriticalChance:
-                    // 这里需要实现暴击率修改逻辑
-                    break;
-                    
-                case StatType.CriticalDamage:
-                    // 这里需要实现暴击伤害修改逻辑
-                    break;
-                    
-                case StatType.Accuracy:
-                    // 这里需要实现命中率修改逻辑
-                    break;
-                    
-                case StatType.Evasion:
-                    // 这里需要实现闪避率修改逻辑
-                    break;
-                    
-                case StatType.Shield:
-                    // 这里需要实现护盾值修改逻辑
-                    break;
-            }
-        }
-        
-        /// <summary>
-        /// 应用乘法操作
-        /// </summary>
-        private static void ApplyMultiplyOperation(BuffEffect effect, Unit target, float value)
-        {
-            switch (effect.statType)
-            {
-                case StatType.Health:
-                    target.health = (int)(target.health * value);
-                    break;
-                    
-                case StatType.Attack:
-                    target.attackPower = (int)(target.attackPower * value);
-                    break;
-                    
-                case StatType.Defense:
-                    target.defensePower = (int)(target.defensePower * value);
-                    break;
-                    
-                case StatType.Speed:
-                    target.speed = (int)(target.speed * value);
-                    break;
-                    
-                case StatType.CriticalChance:
-                    // 这里需要实现暴击率修改逻辑
-                    break;
-                    
-                case StatType.CriticalDamage:
-                    // 这里需要实现暴击伤害修改逻辑
-                    break;
-                    
-                case StatType.Accuracy:
-                    // 这里需要实现命中率修改逻辑
-                    break;
-                    
-                case StatType.Evasion:
-                    // 这里需要实现闪避率修改逻辑
-                    break;
-                    
-                case StatType.Shield:
-                    // 这里需要实现护盾值修改逻辑
-                    break;
-            }
-        }
-        
-        /// <summary>
-        /// 应用除法操作
-        /// </summary>
-        private static void ApplyDivideOperation(BuffEffect effect, Unit target, float value)
-        {
-            if (Mathf.Approximately(value, 0f))
-            {
-                Debug.LogWarning("除零错误: 效果值不能为零");
-                return;
-            }
+            if (target == null) return;
             
+            // 根据操作类型选择计算方式
+            Func<float, float, float> operation = effect.operation switch
+            {
+                EffectOperation.Add => (current, val) => current + val,
+                EffectOperation.Subtract => (current, val) => current - val,
+                EffectOperation.Multiply => (current, val) => current * val,
+                EffectOperation.Divide => (current, val) => 
+                {
+                    if (Mathf.Approximately(val, 0f))
+                    {
+                        Debug.LogWarning("除零错误: 效果值不能为零");
+                        return current;
+                    }
+                    return current / val;
+                },
+                EffectOperation.Set => (current, val) => val,
+                EffectOperation.AddPercentage => (current, val) => current * (1 + val * 0.01f),
+                EffectOperation.SubtractPercentage => (current, val) => current * (1 - val * 0.01f),
+                //这里需求一个百分比转换前的数字，例如：攻击倍率+200%，addpercentage里应当输入200，substractpercentage里应当输入-200
+                _ => (current, val) => current
+            };
+
+            // 应用操作到具体属性
             switch (effect.statType)
             {
-                case StatType.Health:
-                    target.health = (int)(target.health / value);
+                case StatType.BaseHealth:
+                    target.baseHealth = (int)operation(target.baseHealth, value);
+                    break;
+
+                case StatType.HealthMultiplier:
+                    target.healthMultiplier = operation(target.healthMultiplier, value);
                     break;
                     
-                case StatType.Attack:
-                    target.attackPower = (int)(target.attackPower / value);
+                case StatType.AttackPower:
+                    target.attackPower = (int)operation(target.attackPower, value);
+                    break;
+
+                case StatType.AttackMultiplier:
+                    target.attackMultiplier = operation(target.attackMultiplier, value);
                     break;
                     
-                case StatType.Defense:
-                    target.defensePower = (int)(target.defensePower / value);
+                case StatType.DefensePower:
+                    target.defensePower = (int)operation(target.defensePower, value);
                     break;
                     
                 case StatType.Speed:
-                    target.speed = (int)(target.speed / value);
+                    target.speed = (int)operation(target.speed, value);
                     break;
-                    
-                case StatType.CriticalChance:
-                    // 这里需要实现暴击率修改逻辑
-                    break;
-                    
-                case StatType.CriticalDamage:
-                    // 这里需要实现暴击伤害修改逻辑
-                    break;
-                    
-                case StatType.Accuracy:
-                    // 这里需要实现命中率修改逻辑
-                    break;
-                    
-                case StatType.Evasion:
-                    // 这里需要实现闪避率修改逻辑
-                    break;
-                    
+
                 case StatType.Shield:
-                    // 这里需要实现护盾值修改逻辑
+                    target.shield = (int)operation(target.shield, value);
                     break;
             }
         }
-        
-        /// <summary>
-        /// 应用设置操作
-        /// </summary>
-        private static void ApplySetOperation(BuffEffect effect, Unit target, float value)
-        {
-            switch (effect.statType)
-            {
-                case StatType.Health:
-                    target.health = (int)value;
-                    break;
-                    
-                case StatType.Attack:
-                    target.attackPower = (int)value;
-                    break;
-                    
-                case StatType.Defense:
-                    target.defensePower = (int)value;
-                    break;
-                    
-                case StatType.Speed:
-                    target.speed = (int)value;
-                    break;
-                    
-                case StatType.CriticalChance:
-                    // 这里需要实现暴击率修改逻辑
-                    break;
-                    
-                case StatType.CriticalDamage:
-                    // 这里需要实现暴击伤害修改逻辑
-                    break;
-                    
-                case StatType.Accuracy:
-                    // 这里需要实现命中率修改逻辑
-                    break;
-                    
-                case StatType.Evasion:
-                    // 这里需要实现闪避率修改逻辑
-                    break;
-                    
-                case StatType.Shield:
-                    // 这里需要实现护盾值修改逻辑
-                    break;
-            }
-        }
-        
-        /// <summary>
-        /// 应用增加百分比操作
-        /// </summary>
-        private static void ApplyAddPercentageOperation(BuffEffect effect, Unit target, float value)
-        {
-            switch (effect.statType)
-            {
-                case StatType.Health:
-                    target.health += (int)(target.health * value);
-                    break;
-                    
-                case StatType.Attack:
-                    target.attackPower += (int)(target.attackPower * value);
-                    break;
-                    
-                case StatType.Defense:
-                    target.defensePower += (int)(target.defensePower * value);
-                    break;
-                    
-                case StatType.Speed:
-                    target.speed += (int)(target.speed * value);
-                    break;
-                    
-                case StatType.CriticalChance:
-                    // 这里需要实现暴击率修改逻辑
-                    break;
-                    
-                case StatType.CriticalDamage:
-                    // 这里需要实现暴击伤害修改逻辑
-                    break;
-                    
-                case StatType.Accuracy:
-                    // 这里需要实现命中率修改逻辑
-                    break;
-                    
-                case StatType.Evasion:
-                    // 这里需要实现闪避率修改逻辑
-                    break;
-                    
-                case StatType.Shield:
-                    // 这里需要实现护盾值修改逻辑
-                    break;
-            }
-        }
-        
-        /// <summary>
-        /// 应用减少百分比操作
-        /// </summary>
-        private static void ApplySubtractPercentageOperation(BuffEffect effect, Unit target, float value)
-        {
-            switch (effect.statType)
-            {
-                case StatType.Health:
-                    target.health -= (int)(target.health * value);
-                    break;
-                    
-                case StatType.Attack:
-                    target.attackPower -= (int)(target.attackPower * value);
-                    break;
-                    
-                case StatType.Defense:
-                    target.defensePower -= (int)(target.defensePower * value);
-                    break;
-                    
-                case StatType.Speed:
-                    target.speed -= (int)(target.speed * value);
-                    break;
-                    
-                case StatType.CriticalChance:
-                    // 这里需要实现暴击率修改逻辑
-                    break;
-                    
-                case StatType.CriticalDamage:
-                    // 这里需要实现暴击伤害修改逻辑
-                    break;
-                    
-                case StatType.Accuracy:
-                    // 这里需要实现命中率修改逻辑
-                    break;
-                    
-                case StatType.Evasion:
-                    // 这里需要实现闪避率修改逻辑
-                    break;
-                    
-                case StatType.Shield:
-                    // 这里需要实现护盾值修改逻辑
-                    break;
-            }
-        }
-        
-        #endregion
     }
-    
+}
+/*
     /// <summary>
     /// 临时效果管理器，负责管理临时效果并在回合结束时恢复
     /// </summary>
@@ -498,7 +220,6 @@ namespace BuffSystem
     {
         private Unit _owner;
         private Dictionary<StatType, float> _originalValues = new Dictionary<StatType, float>();
-        private Dictionary<StatType, float> _temporaryModifications = new Dictionary<StatType, float>();
         
         public TemporaryEffectManager(Unit owner)
         {
@@ -506,57 +227,67 @@ namespace BuffSystem
         }
         
         /// <summary>
-        /// 记录临时修改
+        /// 在应用任何临时修改前，记录属性的原始值
         /// </summary>
-        public void RecordTemporaryModification(StatType statType, float originalValue, float modificationAmount)
+        public void SnapshotOriginalValue(StatType statType)
         {
+            // 如果还没有记录过这个属性的原始值，就记录一次
             if (!_originalValues.ContainsKey(statType))
             {
+                float originalValue = GetCurrentStatValue(_owner, statType);
                 _originalValues[statType] = originalValue;
             }
-            
-            if (!_temporaryModifications.ContainsKey(statType))
-            {
-                _temporaryModifications[statType] = 0f;
-            }
-            
-            _temporaryModifications[statType] += modificationAmount;
         }
         
+        /// 获取单位当前某个属性的值
+        /// </summary>
+        private float GetCurrentStatValue(Unit unit, StatType statType)
+        {
+            // 这个函数应该和 GetStatType 逻辑一致
+            switch (statType)
+            {
+                case StatType.BaseHealth: return unit.baseHealth;
+                case StatType.HealthMultiplier: return unit.healthMultiplier;
+                case StatType.AttackPower: return unit.attackPower;
+                case StatType.AttackMultiplier: return unit.attackMultiplier;
+                case StatType.DefensePower: return unit.defensePower;
+                case StatType.Speed: return unit.speed;
+                case StatType.Shield: return unit.shield;
+                default: return 0f;
+            }
+        }
+
         /// <summary>
-        /// 恢复所有临时效果
+        /// 设置单位某个属性的值（用于恢复）
+        /// </summary>
+        private void SetStatValue(Unit unit, StatType statType, float value)
+        {
+            switch (statType)
+            {
+                case StatType.BaseHealth: unit.baseHealth = (int)value; break;
+                case StatType.HealthMultiplier: unit.healthMultiplier = value; break;
+                case StatType.AttackPower: unit.attackPower = (int)value; break;
+                case StatType.AttackMultiplier: unit.attackMultiplier = value; break;
+                case StatType.DefensePower: unit.defensePower = (int)value; break;
+                case StatType.Speed: unit.speed = (int)value; break;
+                case StatType.Shield: unit.shield = (int)value; break;
+            }
+        }
+
+        /// <summary>
+        /// 恢复所有临时效果：直接将所有被修改过的属性重置为之前记录的原始值
         /// </summary>
         public void RestoreAllTemporaryEffects()
         {
-            foreach (var kvp in _temporaryModifications)
+            foreach (var kvp in _originalValues)
             {
                 StatType statType = kvp.Key;
-                float modification = kvp.Value;
-                
-                switch (statType)
-                {
-                    case StatType.Health:
-                        _owner.health = (int)(_owner.health - modification);
-                        break;
-                        
-                    case StatType.Attack:
-                        _owner.attackPower = (int)(_owner.attackPower - modification);
-                        break;
-                        
-                    case StatType.Defense:
-                        _owner.defensePower = (int)(_owner.defensePower - modification);
-                        break;
-                        
-                    case StatType.Speed:
-                        _owner.speed = (int)(_owner.speed - modification);
-                        break;
-                        
-                    // 其他属性类型的恢复逻辑...
-                }
+                float originalValue = kvp.Value;
+                SetStatValue(_owner, statType, originalValue);
             }
-            
             _originalValues.Clear();
-            _temporaryModifications.Clear();
         }
     }
-}
+
+*/
+//原本有个临时效果，写完发现直接用buffmanager的过期移除造个一回合持续的buff就好......代码不舍得丢，放这吧。

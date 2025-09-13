@@ -15,33 +15,45 @@ public class Unit : MonoBehaviour
     public string unitName;
 
     //战斗属性
-    public int _speed=5;
+    public int _speed = 5;
     public int speed
     {
         get => _speed;
-        set => _speed=(int)Mathf.Clamp(value,0,10);
+        set => _speed = (int)Mathf.Clamp(value,0,10);
     }//速度，介于0和10之间(包括边缘)
-    public int attackPower=0;//攻击力
-    public int defensePower=0;//防御力
-    public int maxHealth = 100;//最大生命
+    public int attackPower = 0;//攻击力
+    public int defensePower = 0;//防御力
+    public int baseHealth = 100;//基础最大生命
+    public int maxHealth
+    {
+        get => (int)(baseHealth * healthMultiplier);
+        set => baseHealth = value;
+    }
     public int _health = 100;
     public int health
     {
         get => _health;
-        set => _health=(int)Mathf.Clamp(value,0,2*maxHealth);
+        set => _health = (int)Mathf.Clamp(value,0,2*maxHealth);
     }//当前生命，最大值是最大生命的2倍
-    public int maxSkillPoint=60;//最大技力
-    public int _skillPoint=0;
+    public int maxSkillPoint = 60;//最大技力
+    public int _skillPoint = 0;
     public int skillPoint
     {
         get => _skillPoint;
-        set => _skillPoint=(int)Mathf.Clamp(value,0,maxSkillPoint);
+        set => _skillPoint = (int)Mathf.Clamp(value,0,maxSkillPoint);
     }//当前技力，最大值是最大技力
-    public float attackMultiplier=1.00f;//攻击倍率
-    public float skillMultiplier=1.00f;//技能倍率
-    public float defenseCoefficient=>Mathf.Max(Mathf.Min(0.95f,Mathf.Pow(2f,-defensePower*0.1f)),0f);//主动防御承伤系数
-    public float damageReduction=0f;//被动百分比减伤
-    public int flatDamageReduction=0;//被动固定值减伤
+    public int _shield = 0;
+    public int shield
+    {
+        get => _shield;
+        set => _shield = (int)Mathf.Clamp(value,0,2*maxHealth);
+    }//护甲值，最大值是最大生命的2倍
+    public float attackMultiplier = 1.00f;//攻击倍率
+    public float skillMultiplier = 1.00f;//技能倍率
+    public float healthMultiplier = 1.00f;//生命倍率
+    public float defenseCoefficient => Mathf.Max(Mathf.Min(0.95f,Mathf.Pow(2f,-defensePower*0.1f)),0f);//主动防御承伤系数
+    public float damageReduction = 0f;//被动百分比减伤
+    public int flatDamageReduction = 0;//被动固定值减伤
 
     //阵营属性
     //所有阵营属性变量名首字母大写
@@ -122,6 +134,19 @@ public class Unit : MonoBehaviour
     // 接受伤害
     public void TakeDamage(int damage)
     {
+        if (shield!=0)
+        {
+            if(damage >　shield)
+            {
+                damage -= shield;
+                shield = 0;
+            }
+            else
+            {
+                shield -= damage;
+                damage = 0;
+            }
+        }
         health -= damage;
         if (health < 0) health = 0;
         

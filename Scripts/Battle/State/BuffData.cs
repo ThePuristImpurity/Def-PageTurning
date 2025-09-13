@@ -25,10 +25,7 @@ namespace BuffSystem
         public float value = 0f;
         
         [Tooltip("影响的属性类型")] 
-        public StatType statType = StatType.Health;
-        
-        [Tooltip("是否是临时效果（回合结束时恢复）")] 
-        public bool isTemporary = false;
+        public StatType statType = StatType.BaseHealth;
         
         [Tooltip("效果延迟回合数（0表示立即生效）")] 
         public int delayTurns = 0;
