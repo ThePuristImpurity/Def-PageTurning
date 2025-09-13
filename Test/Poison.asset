@@ -16,18 +16,29 @@ MonoBehaviour:
   buffName: poison
   description: "\u4E2D\u6BD2\uFF0C\u6BCF\u56DE\u5408\u7ED3\u675F\u638910%\u8840"
   category: 1
-  effectType: 0
+  effectType: 1
   duration: 3
   maxStacks: 1
   stackingRule: 1
   effects:
   - timing: 3
     target: 0
-    operation: 1
-    valueType: 1
+    operation: 6
+    valueType: 3
+    dependencyTarget: 0
+    dependencyStatType: 0
     value: 10
-    statType: 0
-    isTemporary: 0
+    statType: 2
+    delayTurns: 0
+    triggerChance: 1
+  - timing: 3
+    target: 0
+    operation: 6
+    valueType: 3
+    dependencyTarget: 0
+    dependencyStatType: 0
+    value: 10
+    statType: 2
     delayTurns: 0
     triggerChance: 1
   grantedStates: 64

@@ -16,7 +16,7 @@ MonoBehaviour:
   buffName: stun
   description: "\u6655\u77291\u56DE\u5408\uFF0C\u56E0\u4E3A\u6655\u7729\u6548\u679C\u8FD8\u6CA1\u5199\uFF0C\u6240\u4EE5\u5148\u68C0\u6D4B\u6807\u5FD7\u5728\u4E0D\u5728"
   category: 1
-  effectType: 0
+  effectType: 1
   duration: 1
   maxStacks: 1
   stackingRule: 1

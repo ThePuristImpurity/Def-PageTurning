@@ -1399,15 +1399,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyDecisionTime: 2
   roundExecutionTime: 3
-  AttackButton: {fileID: 0}
-  DefendButton: {fileID: 0}
-  DodgeButton: {fileID: 0}
-  SkillButton: {fileID: 0}
-  startRoundButton: {fileID: 0}
-  AttackBlock: {fileID: 0}
-  DefendBlock: {fileID: 0}
-  DodgeBlock: {fileID: 0}
-  SkillBlock: {fileID: 0}
+  AttackButton: {fileID: 517450125}
+  DefendButton: {fileID: 146875775}
+  DodgeButton: {fileID: 900199431}
+  SkillButton: {fileID: 1730906271}
+  startRoundButton: {fileID: 88010914}
+  AttackBlock: {fileID: 579030420}
+  DefendBlock: {fileID: 1999325602}
+  DodgeBlock: {fileID: 1432278585}
+  SkillBlock: {fileID: 1459848139}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -2014,12 +2014,14 @@ MonoBehaviour:
   _speed: 5
   attackPower: 10
   defensePower: 0
-  maxHealth: 100
+  baseHealth: 100
   _health: 100
   maxSkillPoint: 60
   _skillPoint: 0
+  _shield: 0
   attackMultiplier: 1
   skillMultiplier: 1
+  healthMultiplier: 1
   damageReduction: 0
   flatDamageReduction: 0
   IsPlayer: 1
@@ -2562,12 +2564,14 @@ MonoBehaviour:
   _speed: 5
   attackPower: 0
   defensePower: 0
-  maxHealth: 100
+  baseHealth: 100
   _health: 10000
   maxSkillPoint: 60
   _skillPoint: 0
+  _shield: 0
   attackMultiplier: 1
   skillMultiplier: 1
+  healthMultiplier: 1
   damageReduction: 0
   flatDamageReduction: 0
   IsPlayer: 0

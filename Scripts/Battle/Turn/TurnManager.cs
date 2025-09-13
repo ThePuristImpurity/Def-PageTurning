@@ -662,6 +662,9 @@ public class TurnManager : MonoBehaviour
             ShowGameOverScreen(GameVictor);
             yield break; // 结束协程
         }
+
+        // 通知UI和其他系统回合结束
+        OnRoundEnd?.Invoke();
         
         //所有单位的Buff更新回合
         foreach(Unit unit in allUnits)
@@ -669,8 +672,8 @@ public class TurnManager : MonoBehaviour
             unit.BuffManager.UpdateBuffsOnTurnEnd();
         }
 
-        // 通知UI和其他系统回合结束
-        OnRoundEnd?.Invoke();
+        //  centralized 触发回合结束效果
+        TriggerAllBuffEffects(ApplyTiming.OnTurnEnd);
         
         // 增加回合数，准备下一回合
         currentRound++;
@@ -679,6 +682,15 @@ public class TurnManager : MonoBehaviour
         currentState = RoundState.EnemyDecision;
         
         yield return null;
+    }
+
+    // 新增方法：集中触发所有效果
+    private void TriggerAllBuffEffects(ApplyTiming timing)
+    {
+        foreach (Unit unit in allUnits)
+        {
+            unit.BuffManager.TriggerBuffEffects(timing);
+        }
     }
     
     // 检查游戏结束条件

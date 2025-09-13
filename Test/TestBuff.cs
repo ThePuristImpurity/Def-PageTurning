@@ -69,8 +69,6 @@ public class TestBuffSystem : MonoBehaviour
         // 模拟攻击
         testUnit.BuffManager.TriggerBuffEffects(ApplyTiming.OnAttack);
         
-        // 模拟回合结束（中毒效果应该在这里触发）
-        testUnit.BuffManager.UpdateBuffsOnTurnEnd();
     }
 
     IEnumerator TestBuffStacking()
@@ -132,9 +130,6 @@ public class TestBuffSystem : MonoBehaviour
         Debug.Log($"是否被眩晕: {isStunned} - 预期: True");
         
         yield return new WaitForSeconds(2f);
-        
-        // 模拟回合结束，眩晕应该消失
-        testUnit.BuffManager.UpdateBuffsOnTurnEnd();
         
         isStunned = testUnit.BuffManager.HasState(BuffState.Stunned);
         Debug.Log($"眩晕状态是否消失: {!isStunned} - 预期: True");

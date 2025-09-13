@@ -22,18 +22,11 @@ namespace BuffSystem
             // 检查触发概率
             if (UnityEngine.Random.value > effect.triggerChance)
                 return;
-            
             // 获取实际效果值（考虑层数影响）
             float actualValue = CalculateEffectValue(effect, target, caster, buffStacks);
             
-            // 确定最终目标
-            Unit finalTarget = DetermineEffectTarget(effect, target, caster);
-            
-            if (finalTarget == null)
-                return;
-            
             // 应用效果到目标
-            ApplyEffectToTarget(effect, finalTarget, actualValue);
+            ApplyEffectToTarget(effect, target, actualValue, buffStacks);
         }
         
         /// <summary>
@@ -43,17 +36,18 @@ namespace BuffSystem
         {
             float baseValue = effect.value;
             
+            
             // 根据数值类型计算基础值
             switch (effect.valueType)
             {
                 case EffectValueType.Flat:
                     // 使用固定值
-                    break;
-                    
+                     break;
+                     
                 case EffectValueType.Percentage:
                     // 百分比值
-                    baseValue = baseValue * 0.01f;
-                    break;
+                     baseValue = baseValue * 0.01f;
+                     break;
 
                 case EffectValueType.Reciprocal:
                     // 倒数值
@@ -61,26 +55,18 @@ namespace BuffSystem
                     break;
 
                 case EffectValueType.BasedOnStatType:
-                    // 基于属性：使用现成的 DetermineEffectTarget 函数
-                    Unit statUnit = DetermineEffectTarget(effect, target, caster);
+                    Unit statUnit = GetTarget(effect, target, caster);
                     if (statUnit == null) return 0f;
-                    float statValue = GetStatType(statUnit, effect.statType);
+                    float statValue = GetStatType(statUnit, effect.dependencyStatType);
                     baseValue *= statValue;
                     break;
             }
-            
-            // 考虑Buff层数影响
-            baseValue *= buffStacks;
-            
             return baseValue;
         }
-        
-        /// <summary>
-        /// 确定效果作用的最终目标
-        /// </summary>
-        private static Unit DetermineEffectTarget(BuffEffect effect, Unit target, Unit caster)
+
+        private static Unit GetTarget(BuffEffect effect, Unit target, Unit caster)
         {
-            switch (effect.target)
+            switch (effect.dependencyTarget)
             {
                 case EffectTarget.Self:
                     return target;
@@ -115,7 +101,7 @@ namespace BuffSystem
                     return target;
             }
         }
-
+        
         private static float GetStatType(Unit unit, StatType statType)
         {
             if (unit == null) return 0f;
@@ -152,63 +138,125 @@ namespace BuffSystem
         /// <summary>
         /// 应用效果到目标单位
         /// </summary>
-        private static void ApplyEffectToTarget(BuffEffect effect, Unit target, float value)
+        private static void ApplyEffectToTarget(BuffEffect effect, Unit target, float value, int currentBuffStacks = 1)
         {
             if (target == null) return;
-            
-            // 根据操作类型选择计算方式
-            Func<float, float, float> operation = effect.operation switch
+            int buffStacks = 0;
+            foreach (BuffInstance ownedBuffInstance in effect.ownerBuffData.OwnedBuffInstances)
             {
-                EffectOperation.Add => (current, val) => current + val,
-                EffectOperation.Subtract => (current, val) => current - val,
-                EffectOperation.Multiply => (current, val) => current * val,
-                EffectOperation.Divide => (current, val) => 
+                if (ownedBuffInstance.p_owner == target)
                 {
-                    if (Mathf.Approximately(val, 0f))
-                    {
-                        Debug.LogWarning("除零错误: 效果值不能为零");
-                        return current;
-                    }
-                    return current / val;
-                },
-                EffectOperation.Set => (current, val) => val,
-                EffectOperation.AddPercentage => (current, val) => current * (1 + val * 0.01f),
-                EffectOperation.SubtractPercentage => (current, val) => current * (1 - val * 0.01f),
-                //这里需求一个百分比转换前的数字，例如：攻击倍率+200%，addpercentage里应当输入200，substractpercentage里应当输入-200
-                _ => (current, val) => current
-            };
+                    buffStacks = currentBuffStacks - ownedBuffInstance._currentStacks;
+                    break; 
+                }
+            }
 
+            // 从缓存获取操作委托
+            Func<float, float, int, float> operation = GetCachedOperation(effect.operation);
+            
             // 应用操作到具体属性
             switch (effect.statType)
             {
                 case StatType.BaseHealth:
-                    target.baseHealth = (int)operation(target.baseHealth, value);
+                    target.baseHealth = (int)operation(target.baseHealth, value, buffStacks);
                     break;
 
                 case StatType.HealthMultiplier:
-                    target.healthMultiplier = operation(target.healthMultiplier, value);
+                    target.healthMultiplier = operation(target.healthMultiplier, value, buffStacks);
                     break;
                     
                 case StatType.AttackPower:
-                    target.attackPower = (int)operation(target.attackPower, value);
+                    target.attackPower = (int)operation(target.attackPower, value, buffStacks);
                     break;
 
                 case StatType.AttackMultiplier:
-                    target.attackMultiplier = operation(target.attackMultiplier, value);
+                    target.attackMultiplier = operation(target.attackMultiplier, value, buffStacks);
                     break;
                     
                 case StatType.DefensePower:
-                    target.defensePower = (int)operation(target.defensePower, value);
+                    target.defensePower = (int)operation(target.defensePower, value, buffStacks);
                     break;
                     
                 case StatType.Speed:
-                    target.speed = (int)operation(target.speed, value);
+                    target.speed = (int)operation(target.speed, value, buffStacks);
                     break;
 
                 case StatType.Shield:
-                    target.shield = (int)operation(target.shield, value);
+                    target.shield = (int)operation(target.shield, value, buffStacks);
                     break;
             }
+        }
+
+        /// <summary>
+        /// 操作委托缓存字典
+        /// </summary>
+        private static readonly Dictionary<EffectOperation, Func<float, float, int, float>> _operationCache = 
+            new Dictionary<EffectOperation, Func<float, float, int, float>>();
+
+        /// <summary>
+        /// 从缓存获取操作委托（线程安全）
+        /// </summary>
+        private static Func<float, float, int, float> GetCachedOperation(EffectOperation operation)
+        {
+            // 如果缓存未初始化，进行初始化
+            if (_operationCache.Count == 0)
+            {
+                lock (_operationCache)
+                {
+                    if (_operationCache.Count == 0)
+                    {
+                        InitializeOperationCache();
+                    }
+                }
+            }
+            
+            // 从缓存获取委托
+            return _operationCache.TryGetValue(operation, out var cachedOperation) 
+                ? cachedOperation 
+                : (current, val, buffStacks) => current; // 默认操作
+        }
+
+        /// <summary>
+        /// 初始化操作缓存
+        /// </summary>
+        private static void InitializeOperationCache()
+        {
+            _operationCache[EffectOperation.Add] = (current, val, buffStacks) => current + val * buffStacks;
+            _operationCache[EffectOperation.Subtract] = (current, val, buffStacks) => current - val * buffStacks;
+            _operationCache[EffectOperation.Multiply] = (current, val, buffStacks) => 
+                current * SafePower(val, buffStacks);
+            _operationCache[EffectOperation.Divide] = (current, val, buffStacks) => 
+            {
+                if (Mathf.Approximately(val, 0f))
+                {
+                    Debug.LogWarning("除零错误: 效果值不能为零");
+                    return current;
+                }
+                return current / SafePower(val, buffStacks);
+            };
+            _operationCache[EffectOperation.Set] = (current, val, buffStacks) => val;
+            _operationCache[EffectOperation.AddPercentage] = (current, val, buffStacks) => 
+                current * SafePower(1 + val * 0.01f, buffStacks);
+            _operationCache[EffectOperation.SubtractPercentage] = (current, val, buffStacks) => 
+                current * SafePower(1 - val * 0.01f, buffStacks);
+            // 这里需求一个百分比转换前的数字，例如：攻击倍率+200%，addpercentage里应当输入200，substractpercentage里应当输入-200
+            // 需要注意的是，一般不建议在需要恢复数值的buff中使用百分比增加减少方法，因为这个方法跟取倒数方法各种意义上都不是很适配
+            // 也就是说，如果你需要恢复该buff的影响，你需要手动计算倍率的倒数值
+            // 只有当你确定这个数值增加从buff添加的那一刻直到战斗结束将一直存在，才推荐使用百分比增加减少方法
+            // 即使如此，这个方法仍然有其应用领域：局外属性增加
+        }
+        
+        /// <summary>
+        /// 安全的幂运算
+        /// </summary>
+        private static float SafePower(float baseValue, int exponent)
+        {
+            if (Mathf.Approximately(baseValue, 0f) && exponent <= 0)
+            {
+                Debug.LogWarning("幂运算错误: 底数为零且指数非正");
+                return 0f;
+            }
+            return Mathf.Pow(baseValue, exponent);
         }
     }
 }

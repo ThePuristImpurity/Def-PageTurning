@@ -16,18 +16,25 @@ MonoBehaviour:
   buffName: stacking
   description: "\u53E0\u52A03\u5C42\u7684\u653B\u51FB\u529B\u56FA\u5B9A+10buff"
   category: 0
-  effectType: 0
+  effectType: 1
   duration: 3
   maxStacks: 3
   stackingRule: 3
   effects:
   - timing: 0
     target: 0
-    operation: 0
+    operation: 2
     valueType: 0
-    value: 10
-    statType: 1
-    isTemporary: 0
+    value: 1.1
+    statType: 4
+    delayTurns: 0
+    triggerChance: 1
+  - timing: 1
+    target: 0
+    operation: 3
+    valueType: 0
+    value: 1.1
+    statType: 4
     delayTurns: 0
     triggerChance: 1
   grantedStates: 0

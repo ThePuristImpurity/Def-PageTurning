@@ -176,7 +176,7 @@ namespace BuffSystem
         /// <summary>
         /// 触发指定时机的Buff效果
         /// </summary>
-        public void TriggerBuffEffects(ApplyTiming timing, Unit target = null, float damageAmount = 0f)
+        public void TriggerBuffEffects(ApplyTiming timing, float damageAmount = 0f)
         {
             if (!_buffsByTiming.ContainsKey(timing))
                 return;
@@ -185,9 +185,9 @@ namespace BuffSystem
             
             foreach (var buff in buffsToTrigger)
             {
-                if (buff.IsActive)
+                if (buff.IsActive && (buff.p_owner == this))//buff活跃且buff的持有者与自身相同时，以buff的效果的目标为目标触发效果
                 {
-                    buff.TriggerEffects(timing, target, damageAmount);
+                    buff.TriggerEffects(timing, damageAmount);
                 }
             }
         }
@@ -218,7 +218,7 @@ namespace BuffSystem
             {
                 RemoveBuff(buffId);
             }
-            
+
             // 触发回合结束效果
             TriggerBuffEffects(ApplyTiming.OnTurnEnd);
         }

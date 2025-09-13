@@ -1,5 +1,7 @@
 using UnityEngine;
 using BuffSystem;
+using System;
+using System.Collections.Generic;
 
 public class Unit : MonoBehaviour
 {
@@ -9,6 +11,38 @@ public class Unit : MonoBehaviour
     {
         get => _buffManager;
         set => _buffManager=value;
+    }
+
+    //引入Buff实例列表
+    private List<BuffInstance> OwnedBuffInstances = new List<BuffInstance>();
+
+    // 通过事件通知外部修改
+    public event Action<BuffInstance> U_OnBuffAdded;
+    public event Action<BuffInstance> U_OnBuffRemoved;
+    public event System.Action U_OnBuffsChanged;
+    //安全的添加Buff实例列表成员的方式
+    public bool AddBuff(BuffInstance buff)
+    {
+        if (buff == null || OwnedBuffInstances.Contains(buff)) return false;
+        OwnedBuffInstances.Add(buff);
+        U_OnBuffAdded?.Invoke(buff);
+        U_OnBuffsChanged?.Invoke();
+        return true;
+    }
+    //安全移除方式
+    public bool RemoveBuff(BuffInstance buff)
+    {
+        if (!OwnedBuffInstances.Remove(buff)) return false;
+        
+        U_OnBuffRemoved?.Invoke(buff);
+        U_OnBuffsChanged?.Invoke();
+        return true;
+    }
+    // 允许外部批量操作，但保持控制
+    public void ModifyBuffs(Action<List<BuffInstance>> U_modificationAction)
+    {
+        U_modificationAction?.Invoke(OwnedBuffInstances);
+        U_OnBuffsChanged?.Invoke();
     }
 
     // 背景属性
@@ -214,7 +248,7 @@ public class AttackAction : Action
         }
         if(target.IsDodging)
         {
-            int random=Random.Range(0, 100)+1;
+            int random=UnityEngine.Random.Range(0, 100)+1;
             int dodgeChance=(source.speed-target.speed)*10+50;
             if(dodgeChance>=random)
             {

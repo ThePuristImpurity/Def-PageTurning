@@ -9,6 +9,9 @@ namespace BuffSystem
     [System.Serializable]
     public class BuffEffect
     {
+        [NonSerialized]
+        public BuffData ownerBuffData;
+
         [Tooltip("效果触发时机")] 
         public ApplyTiming timing = ApplyTiming.OnApply;
         
@@ -20,6 +23,12 @@ namespace BuffSystem
         
         [Tooltip("数值计算方式")] 
         public EffectValueType valueType = EffectValueType.Flat;
+
+        [Tooltip("数值计算依赖目标*")]
+        public EffectTarget dependencyTarget = EffectTarget.Self;
+
+        [Tooltip("数值计算依赖属性类型")]
+        public StatType dependencyStatType = StatType.BaseHealth;
         
         [Tooltip("效果数值")] 
         public float value = 0f;
@@ -89,6 +98,29 @@ namespace BuffSystem
         [Header("🔹 效果配置")]
         [Tooltip("Buff效果列表")] 
         public List<BuffEffect> effects = new List<BuffEffect>();
+
+        [NonSerialized]
+        //引入Buff实例列表
+        public List<BuffInstance> OwnedBuffInstances = new List<BuffInstance>();
+
+        //安全的添加Buff实例列表成员的方式
+        public bool AddBuff(BuffInstance buff)
+        {
+            if (buff == null || OwnedBuffInstances.Contains(buff)) return false;
+            OwnedBuffInstances.Add(buff);
+            return true;
+        }
+        //安全移除方式
+        public bool RemoveBuff(BuffInstance buff)
+        {
+            if (!OwnedBuffInstances.Remove(buff)) return false;
+            return true;
+        }
+        // 允许外部批量操作，但保持控制
+        public void ModifyBuffs(Action<List<BuffInstance>> B_modificationAction)
+        {
+            B_modificationAction?.Invoke(OwnedBuffInstances);
+        }
         
         [Header("🔹 状态标志")]
         [Tooltip("Buff赋予的状态标志")] 
@@ -211,6 +243,19 @@ namespace BuffSystem
         public bool CanBeDispelledBy(BuffCategory dispelType)
         {
             return dispellableBy.Contains(dispelType);
+        }
+
+        private void OnValidate()
+        {
+            InitializeEffectOwners();
+        }
+        
+        private void InitializeEffectOwners()
+        {
+            foreach (var effect in effects)
+            {
+                effect.ownerBuffData = this;
+            }
         }
     }
 }

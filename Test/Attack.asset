@@ -16,7 +16,7 @@ MonoBehaviour:
   buffName: AttackBuff
   description: "20%\u52A0\u653B"
   category: 0
-  effectType: 0
+  effectType: 1
   duration: 2
   maxStacks: 1
   stackingRule: 1
@@ -25,18 +25,16 @@ MonoBehaviour:
     target: 0
     operation: 5
     valueType: 0
-    value: 0.2
-    statType: 1
-    isTemporary: 1
+    value: 20
+    statType: 4
     delayTurns: 0
     triggerChance: 1
   - timing: 1
     target: 0
     operation: 6
     valueType: 0
-    value: 0.2
-    statType: 1
-    isTemporary: 1
+    value: 20
+    statType: 4
     delayTurns: 0
     triggerChance: 1
   grantedStates: 0

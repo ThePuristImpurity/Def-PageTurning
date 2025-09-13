@@ -15,10 +15,12 @@ namespace BuffSystem
         
         // Buff持有者和施放者
         private Unit _owner;
+        public Unit p_owner;
         private Unit _caster;
+
         
         // Buff状态信息
-        private int _currentStacks;
+        public int _currentStacks;
         private int _remainingDuration;
         private bool _isActive;
         
@@ -57,10 +59,12 @@ namespace BuffSystem
         {
             _buffData = buffData;
             _owner = owner;
+            p_owner = owner;
             _caster = caster;
             _currentStacks = Mathf.Clamp(initialStacks, 1, buffData.maxStacks);
             _remainingDuration = buffData.duration;
             _isActive = true;
+            owner.AddBuff(this);
             
             // 初始化效果延迟计数器
             for (int i = 0; i < buffData.effects.Count; i++)
@@ -74,7 +78,7 @@ namespace BuffSystem
         /// <summary>
         /// 触发指定时机的Buff效果
         /// </summary>
-        public void TriggerEffects(ApplyTiming timing, Unit target = null, float damageAmount = 0f)
+        public void TriggerEffects(ApplyTiming timing, float damageAmount = 0f)
         {
             if (!_isActive) return;
             
@@ -92,7 +96,7 @@ namespace BuffSystem
                     }
                     
                     // 应用效果
-                    ApplyEffect(effect, target, damageAmount);
+                    ApplyEffect(effect, effect.target, damageAmount);
                 }
             }
         }
@@ -100,15 +104,57 @@ namespace BuffSystem
         /// <summary>
         /// 应用单个效果
         /// </summary>
-        public void ApplyEffect(BuffEffect effect, Unit target = null, float damageAmount = 0f)
+        public void ApplyEffect(BuffEffect effect, EffectTarget effectTarget, float damageAmount = 0f)
         {
             if (!_isActive) return;
-            
+            Unit caster = _caster;
+            Unit target = null;
             // 使用默认目标（Buff持有者）
-            Unit effectTarget = target ?? _owner;
+            switch (effectTarget)
+            {
+                case EffectTarget.Self:
+                    target = _owner;
+                    break;
+                    
+                case EffectTarget.Caster:
+                    target = _caster;
+                    break;
+                    
+                case EffectTarget.Target:
+                    target = _owner;
+                    break;
+                    
+                case EffectTarget.AllAllies:
+                    // 这里需要实现获取所有盟友的逻辑
+                    // 暂时返回目标本身
+                    target = _owner;
+                    break;
+                    
+                case EffectTarget.AllEnemies:
+                    // 这里需要实现获取所有敌人的逻辑
+                    // 暂时返回目标本身
+                    target = _owner;
+                    break;
+                    
+                case EffectTarget.RandomAlly:
+                    // 这里需要实现随机选择盟友的逻辑
+                    // 暂时返回目标本身
+                    target = _owner;
+                    break;
+                    
+                case EffectTarget.RandomEnemy:
+                    // 这里需要实现随机选择敌人的逻辑
+                    // 暂时返回目标本身
+                    target = _owner;
+                    break;
+                    
+                default:
+                    target = _owner;
+                    break;
+            }
             
             // 应用效果
-            BuffEffectApplier.ApplyEffect(effect, effectTarget, _caster, _currentStacks);
+            BuffEffectApplier.ApplyEffect(effect, target, _caster, _currentStacks);
             
             Debug.Log($"{_owner.unitName} 的 {_buffData.buffName} 触发效果: {effect.timing}");
         }
