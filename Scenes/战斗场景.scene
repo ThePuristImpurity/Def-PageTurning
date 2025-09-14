@@ -524,18 +524,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7285e818291818840a1ef3b901630854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BuffManager: {fileID: 0}
   unitName: 3
   _speed: 5
   attackPower: 20
   defensePower: 0
-  maxHealth: 100
+  baseHealth: 100
   _health: 100
   maxSkillPoint: 60
   _skillPoint: 0
+  _shield: 0
   attackMultiplier: 2.5
   skillMultiplier: 1
+  healthMultiplier: 1
   damageReduction: 0
   flatDamageReduction: 0
+  IsPlanable: 0
   IsPlayer: 0
   IsEnemy: 1
   IsNeutral: 0
@@ -2152,18 +2156,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7285e818291818840a1ef3b901630854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BuffManager: {fileID: 0}
   unitName: 2
   _speed: 5
   attackPower: 15
   defensePower: 0
-  maxHealth: 100
+  baseHealth: 100
   _health: 100
   maxSkillPoint: 60
   _skillPoint: 0
+  _shield: 0
   attackMultiplier: 2
   skillMultiplier: 1
+  healthMultiplier: 1
   damageReduction: 0
   flatDamageReduction: 0
+  IsPlanable: 0
   IsPlayer: 0
   IsEnemy: 1
   IsNeutral: 0
@@ -2408,22 +2416,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7285e818291818840a1ef3b901630854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BuffManager: {fileID: 0}
   unitName: Player
   _speed: 5
   attackPower: 0
   defensePower: 0
-  maxHealth: 100
+  baseHealth: 100
   _health: 100
   maxSkillPoint: 60
   _skillPoint: 0
+  _shield: 0
   attackMultiplier: 1
   skillMultiplier: 1
+  healthMultiplier: 1
   damageReduction: 0
   flatDamageReduction: 0
+  IsPlanable: 1
   IsPlayer: 1
   IsEnemy: 0
   IsNeutral: 0
-  StandingPosition: 0
+  StandingPosition: -1
   IsDefending: 0
   IsDodging: 0
 --- !u!1 &1432278585
@@ -3032,18 +3044,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7285e818291818840a1ef3b901630854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BuffManager: {fileID: 0}
   unitName: 1
   _speed: 5
   attackPower: 10
   defensePower: 0
-  maxHealth: 100
+  baseHealth: 100
   _health: 100
   maxSkillPoint: 60
   _skillPoint: 0
+  _shield: 0
   attackMultiplier: 1.5
   skillMultiplier: 1
+  healthMultiplier: 1
   damageReduction: 0
   flatDamageReduction: 0
+  IsPlanable: 0
   IsPlayer: 0
   IsEnemy: 1
   IsNeutral: 0

@@ -301,9 +301,9 @@ public class TurnManager : MonoBehaviour
         // 敌方AI做出决策
         foreach (Unit unit in allUnits)
         {
-            if (unit.IsEnemy)
+            if (!unit.IsPlanable)
             {
-                unit.DecideAction(); // 敌方单位决策
+                unit.DecideAction(); // 不可操控单位的自动决策
             }
         }
         
@@ -355,18 +355,15 @@ public class TurnManager : MonoBehaviour
             {
                 if (selectedTarget == null)
                 {
-                    int targetposition=99;
                     foreach(Unit unit in allUnits)
                     {
-                        if(unit.IsEnemy)
+                        if (unit.IsPlanable)
                         {
-                            if(unit.StandingPosition<targetposition)
-                            {
-                                targetposition=unit.StandingPosition;
-                                selectedTarget=unit;
-                            }
+                            selectedTarget = unit.FindNearestEnemyCampUnit();
+                            break;
                         }
                     }
+
                     while (Input.GetKeyDown(KeyCode.Space))
                     {
 
@@ -535,10 +532,10 @@ public class TurnManager : MonoBehaviour
     // 应用选择的策略
     private void ApplySelectedStrategy(string strategy)
     {
-         // 首先重置所有单位的状态
+         // 首先重置所有可操控单位的状态
         foreach (Unit unit in allUnits)
         {
-            if (unit.IsPlayer == true)
+            if (unit.IsPlanable)
             {
                 unit.IsDefending = false;
                 unit.IsDodging = false;
@@ -552,7 +549,7 @@ public class TurnManager : MonoBehaviour
                 // 应用攻击策略
                 foreach (Unit unit in allUnits)
                 {
-                    if (unit.IsPlayer)
+                    if (unit.IsPlanable)
                     {
                         // 这里需要为每个玩家单位设置攻击目标
                         // 您可能需要修改Unit类来支持设置特定目标
@@ -566,7 +563,7 @@ public class TurnManager : MonoBehaviour
                 // 应用防御策略
                 foreach (Unit unit in allUnits)
                 {
-                    if (unit.IsPlayer == true)
+                    if (unit.IsPlanable)
                     {
                         unit.IsDefending = true;
                     }
@@ -578,7 +575,7 @@ public class TurnManager : MonoBehaviour
                 // 应用闪避策略
                 foreach (Unit unit in allUnits)
                 {
-                    if (unit.IsPlayer == true)
+                    if (unit.IsPlanable)
                     {
                         unit.IsDodging = true;
                     }
@@ -590,7 +587,7 @@ public class TurnManager : MonoBehaviour
                 // 应用技能策略
                 foreach (Unit unit in allUnits)
                 {
-                    if (unit.IsPlayer)
+                    if (unit.IsPlanable && unit.skillPoint == unit.maxSkillPoint)
                     {
                         SetUnitSkillTarget(unit, selectedTarget);
                     }

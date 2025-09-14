@@ -6,12 +6,7 @@ using System.Collections.Generic;
 public class Unit : MonoBehaviour
 {
     //引入隔壁的Buff管理器
-    protected BuffManager _buffManager;
-    public BuffManager BuffManager
-    {
-        get => _buffManager;
-        set => _buffManager=value;
-    }
+    public BuffManager BuffManager = null;
 
     //引入Buff实例列表
     private List<BuffInstance> OwnedBuffInstances = new List<BuffInstance>();
@@ -91,26 +86,32 @@ public class Unit : MonoBehaviour
 
     //阵营属性
     //所有阵营属性变量名首字母大写
+    public bool IsPlanable = false;//是否可以被玩家操控
     public bool IsPlayer = false;
     public bool IsEnemy = false;
-    public bool IsNeutral = false;
+    public bool IsNeutral = false;//中立单位初始不和任何单位有盟友或敌对关系，因此往往要搭配下面的ExtraRelationships使用
+    public Dictionary<Unit,int> ExtraRelationships = new Dictionary<Unit,int>();// 声明一个字典，需求一个Unit:int的键值对
+    // 这里的Unit代表与自身有额外关系的目标，此字典为空时，所有关系为默认情况，此字典不为空时，以此字典的关系覆盖原本关系
+    // 这里需求的int为0时，代表双方为中立关系(即没有任何敌对或盟友关系)
+    // 这里需求的int为1时，代表双方为盟友关系
+    // 这里需求的int为2时，代表双方为敌对关系
 
     //位置属性
     //所有位置属性变量名首字母大写
-    public int StandingPosition = -1;//站位，-1代表不在场上，0代表初始玩家位置，1~4代表敌方初始位置，5代表额外站位(暂时不考虑)
+    public int StandingPosition = 0;// 站位，0代表不在场上，-1~4代表我方初始位置，1~4代表敌方初始位置，5代表额外站位(暂时不考虑)
 
     // 行动相关
     public Action plannedAction; // 计划执行的动作
 
-    public bool IsDefending = false;//是否处于防御状态
-    public bool IsDodging = false;//是否处于闪避状态
+    public bool IsDefending = false;// 是否处于防御状态
+    public bool IsDodging = false;// 是否处于闪避状态
 
     public bool IsDefeated { get { return health == 0; } }
 
-    void start()
+    void Start()
     {
-        BuffManager.Initialize(this);// 先初始化 BuffManager
-
+        BuffManager = gameObject.AddComponent<BuffManager>();// 先初始化 BuffManager
+        BuffManager.Initialize(this);
     }
     
     // 决策方法(敌方AI使用)
@@ -139,22 +140,37 @@ public class Unit : MonoBehaviour
     }
     
     // 辅助方法：查找最近的敌对阵营单位
-    private Unit FindNearestEnemyCampUnit()
+    public Unit FindNearestEnemyCampUnit()
     {
         // 实现查找逻辑
         Unit[] allUnits = FindObjectsOfType<Unit>();
         Unit nearestEnemy = null;
-        float shortestDistance = Mathf.Infinity;
+        int shortestDistance = 99;
         
         foreach (Unit unit in allUnits)
         {
             // 根据阵营关系判断是否为敌人
             bool isEnemy = (this.IsPlayer && unit.IsEnemy) || 
-                        (this.IsEnemy && unit.IsPlayer) ;
-            
+                        (this.IsEnemy && unit.IsPlayer);
+            if (this.ExtraRelationships != null)
+            {
+                if (this.ExtraRelationships.TryGetValue(unit, out int relationshipValue))
+                {
+                    if (relationshipValue == 1)
+                    {
+                        isEnemy = false;
+                    }
+                    if (relationshipValue == 2)
+                    {
+                        isEnemy = true;
+                    }
+                }
+            }
+
             if (isEnemy && !unit.IsDefeated)
             {
-                float distance = Vector3.Distance(transform.position, unit.transform.position);
+                int distance = this.StandingPosition - unit.StandingPosition;
+                if (distance < 0) distance=-distance;
                 if (distance < shortestDistance)
                 {
                     shortestDistance = distance;

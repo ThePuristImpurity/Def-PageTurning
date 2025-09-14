@@ -35,7 +35,7 @@ namespace BuffSystem
         public event Action<BuffState> OnStateChanged;
         
         /// <summary>
-        /// 初始化Buff管理器
+        /// 构造函数初始化Buff管理器
         /// </summary>
         public void Initialize(Unit owner)
         {
@@ -365,7 +365,7 @@ namespace BuffSystem
                 if (effect.timing == timing)
                 {
                     // 这里会调用BuffInstance来应用具体效果
-                    buff.ApplyEffect(effect);
+                    buff.ApplyEffect(effect,effect.target);
                 }
             }
         }

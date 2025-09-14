@@ -2024,10 +2024,11 @@ MonoBehaviour:
   healthMultiplier: 1
   damageReduction: 0
   flatDamageReduction: 0
+  IsPlanable: 1
   IsPlayer: 1
   IsEnemy: 0
   IsNeutral: 0
-  StandingPosition: 0
+  StandingPosition: -1
   IsDefending: 0
   IsDodging: 0
   testHealth: 1000
@@ -2574,6 +2575,7 @@ MonoBehaviour:
   healthMultiplier: 1
   damageReduction: 0
   flatDamageReduction: 0
+  IsPlanable: 0
   IsPlayer: 0
   IsEnemy: 1
   IsNeutral: 0
