@@ -1,0 +1,119 @@
+//此记录仅适用于Scripts文件夹
+
+[Battle] // 战斗系统
+{
+    >> Interfaces // 接口模块
+    {
+        >IBackgroundProvider
+        >IBattleIntalizer
+        >IPositionProvider
+    }
+    >> Skill // 技能模块
+    {
+        >SkillEffect
+        >SkillList // 技能表组件
+        >SkillManager
+    }
+    >> State // 状态模块
+    {
+        >> Resource// 这里放已经设计好的Buff
+        {
+            // 占位
+        }
+        >BuffEffects
+        >BuffInstance
+        >BuffManager
+    }
+    >> System // 系统行为模块
+    {
+        >BackgroundRenderer
+        >BattlefieldLayout
+        >BattleManager // 战斗系统总控组件
+        >BattleTransitionManager
+        >FormationConfig
+        >PositionCalculator
+        >PositionConfig
+        >PositionPlaceMent
+        >TurnManager // 回合组件
+    }
+    >> Unit // 单位管理模块
+    {
+        >EnemyUnit
+        >FormationManager
+        >NeutralUnit
+        >PlayerUnit
+        >UnitBehaviour
+    }
+}
+
+[Character] // 角色系统
+{
+    >CharacterList // 角色表组件
+}
+
+[Core] // 核心系统
+{
+    >> Enum // 枚举文件模块
+    {
+        >BuffEnum // Buff枚举组件
+    }
+    >GameManager // 游戏总管理组件
+}
+
+[Data] // 数据系统
+{
+    >> Defination // 定义文件模块
+    {
+        >BuffDefination
+        >CharacterDefination // 角色基础定义组件
+        >ItemDefination
+        >NPCDefination
+        >SkillDefination
+        >UnitDefination // 单位基础定义组件
+    }
+    >> Runtime // 运行文件模块
+    {
+        //
+    }
+}
+
+[UI] // UI系统
+{
+    >> BattleUI // 战斗UI模块
+    {
+        //
+    }
+    >> MainUI // 全局UI模块
+    {
+        //
+    }
+}
+
+[Utils] // 一些实用小工具，还没想好放什么，或许会一直空着
+{
+    //
+}
+
+[World] // 世界系统
+{
+    >> Event // 事件模块
+    {
+        //
+    }
+    >> Exploration // 探索模块
+    {
+        //
+    }
+    >> Map // 地图模块
+    {
+        >WorldMapManager
+    }
+    >> NPC // NPC模块
+    {
+        //
+    }
+    >> Quest // 任务模块
+    {
+        //
+    }
+}
